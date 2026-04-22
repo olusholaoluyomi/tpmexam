@@ -1,34 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Award, CheckCircle2, ChevronDown, ChevronUp, Download, Home, RotateCcw, ShieldAlert, XCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import type { AttemptRecord, UserIdentity } from "@/lib/exam-storage";
-import { cn } from "@/lib/utils";
 import { formatDuration } from "@/lib/utils-exam";
 
-interface ReviewItem {
-  id: number;
-  question: string;
-  options: { key: string; label: string }[];
-  given: string | null;
-  correct: string;
-}
+const mono: React.CSSProperties = { fontFamily: "var(--font-mono)" };
+const border = "1.5px solid var(--border)";
 
+interface ReviewItem { id: number; question: string; options: { key: string; label: string }[]; given: string | null; correct: string; }
 interface ResultPayload {
-  identity: UserIdentity;
-  attempt: AttemptRecord;
-  isFinal: boolean;
-  autoSubmitted: boolean;
-  cheatLock: boolean;
-  review: ReviewItem[];
+  identity: UserIdentity; attempt: AttemptRecord; isFinal: boolean;
+  autoSubmitted: boolean; cheatLock: boolean; review: ReviewItem[];
   attemptsHistory: { attemptNumber: number; percentage: number; passed: boolean }[];
 }
 
 export const Route = createFileRoute("/result")({
-  head: () => ({
-    meta: [{ title: "Your result — TPM Masterclass CBT" }],
-  }),
+  head: () => ({ meta: [{ title: "Your result — TPM Masterclass" }] }),
   component: ResultPage,
 });
 
@@ -36,19 +22,11 @@ function ResultPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<ResultPayload | null>(null);
   const [showReview, setShowReview] = useState(false);
-  const certRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("tpm-cbt:last-review");
-    if (!raw) {
-      navigate({ to: "/" });
-      return;
-    }
-    try {
-      setData(JSON.parse(raw) as ResultPayload);
-    } catch {
-      navigate({ to: "/" });
-    }
+    if (!raw) { navigate({ to: "/" }); return; }
+    try { setData(JSON.parse(raw) as ResultPayload); } catch { navigate({ to: "/" }); }
   }, [navigate]);
 
   const passed = data?.attempt.passed ?? false;
@@ -56,282 +34,225 @@ function ResultPage() {
 
   const summary = useMemo(() => {
     if (!data) return null;
-    const correct = data.review.filter((r) => r.given === r.correct).length;
-    const incorrect = data.review.filter((r) => r.given && r.given !== r.correct).length;
-    const skipped = data.review.filter((r) => !r.given).length;
-    return { correct, incorrect, skipped };
+    return {
+      correct:   data.review.filter((r) => r.given === r.correct).length,
+      incorrect: data.review.filter((r) => r.given && r.given !== r.correct).length,
+      skipped:   data.review.filter((r) => !r.given).length,
+    };
   }, [data]);
 
   const downloadCertificate = () => {
     if (!data) return;
     const html = certificateHtml(data.identity, data.attempt);
     const blob = new Blob([html], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `TPM-Certificate-${data.identity.name.replace(/\s+/g, "_")}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url; a.download = `TPM-Certificate-${data.identity.name.replace(/\s+/g, "_")}.html`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   };
 
   if (!data || !summary) return null;
 
   return (
-    <div className="min-h-screen px-4 py-10 md:py-14">
-      <div className="mx-auto max-w-4xl">
-        {/* Hero */}
-        <Card
-          className={cn(
-            "bg-gradient-surface relative overflow-hidden border p-8 text-center md:p-12",
-            passed ? "border-primary/30" : "border-destructive/30",
-          )}
-          style={{ boxShadow: "var(--shadow-elevated)" }}
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-30"
-            style={{
-              background: passed
-                ? "radial-gradient(circle at 50% 0%, oklch(0.86 0.27 145 / 0.4), transparent 60%)"
-                : "radial-gradient(circle at 50% 0%, oklch(0.65 0.24 25 / 0.3), transparent 60%)",
-            }}
-          />
-          <div className="relative">
-            <div
-              className={cn(
-                "mx-auto flex h-20 w-20 items-center justify-center rounded-full",
-                passed ? "bg-primary/20 text-primary" : "bg-destructive/20 text-destructive",
-              )}
-            >
-              {passed ? <Award className="h-10 w-10" /> : <XCircle className="h-10 w-10" />}
-            </div>
-            <h1 className="mt-5 text-3xl font-bold md:text-4xl">
+    <div style={{ minHeight: "100vh", background: "var(--background)", color: "var(--foreground)", fontFamily: "var(--font-sans)" }}>
+
+      {/* NAV */}
+      <nav style={{ borderBottom: border, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", height: 52, background: "var(--background)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 28, height: 28, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ ...mono, color: "#fff", fontSize: 9, fontWeight: 700 }}>TPM</span>
+          </div>
+          <span style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" as const, fontWeight: 700 }}>MASTERCLASS_</span>
+        </div>
+        <Link to="/" style={{ ...mono, fontSize: 10, letterSpacing: "0.1em", color: "var(--muted-foreground)", textDecoration: "none" }}>← BACK TO HOME</Link>
+      </nav>
+
+      {/* RESULT TICKER */}
+      <div style={{ background: passed ? "var(--primary)" : "var(--destructive)", borderBottom: border, height: 34, display: "flex", alignItems: "center", overflow: "hidden" }}>
+        <div className="ticker-track">
+          {Array(14).fill(passed ? `${data.attempt.percentage}% — PASSED ✓` : `${data.attempt.percentage}% — NOT PASSED`).map((t, i) => (
+            <span key={i} style={{ ...mono, fontSize: 10, fontWeight: 700, color: "#fff", letterSpacing: "0.14em", padding: "0 28px", borderRight: "1.5px solid rgba(255,255,255,0.3)", whiteSpace: "nowrap" }}>{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 860, margin: "0 auto", padding: "44px 32px" }}>
+
+        {/* HERO RESULT */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", border, marginBottom: 24 }}>
+          <div style={{ padding: "40px 36px", borderRight: border, background: "var(--surface-elevated)" }}>
+            <p style={{ ...mono, fontSize: 10, letterSpacing: "0.12em", color: passed ? "var(--primary)" : "var(--destructive)", fontWeight: 700, marginBottom: 16 }}>
+              {passed ? "—— ✓ PASSED" : "—— ✗ NOT PASSED"}
+            </p>
+            <h1 style={{ fontSize: "clamp(36px, 5vw, 64px)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "-0.03em", lineHeight: 0.9, marginBottom: 20 }}>
               {passed ? (
-                <>
-                  Congratulations, <span className="text-primary text-glow">{data.identity.name.split(" ")[0]}</span>!
-                </>
+                <>CONGRATS,<br /><span style={{ color: "var(--primary)" }}>{data.identity.name.split(" ")[0].toUpperCase()}!</span></>
               ) : (
-                <>Almost there, {data.identity.name.split(" ")[0]}</>
+                <>ALMOST,<br />{data.identity.name.split(" ")[0].toUpperCase()}</>
               )}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground md:text-base">
+            <p style={{ ...mono, fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.8 }}>
               {passed
                 ? "You've passed the TPM Masterclass certification exam."
                 : data.isFinal
-                  ? "You've used all 3 attempts. Please revise the masterclass material — the exam reopens for you in 2 weeks."
+                  ? "You've used all 3 attempts. Revisit the material — the exam reopens in 2 weeks."
                   : `You need 80% to pass. You have ${attemptsRemaining} attempt${attemptsRemaining === 1 ? "" : "s"} left.`}
             </p>
-
             {data.cheatLock && (
-              <div className="mx-auto mt-5 flex max-w-md items-start gap-2 rounded-lg border border-warning/40 bg-warning/10 p-3 text-left text-sm text-warning">
-                <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
-                <span>
-                  Your session ended due to repeated tab switching. You're locked out for 5 hours.
-                </span>
+              <div style={{ marginTop: 16, border: "1.5px solid var(--warning)", padding: "10px 14px", ...mono, fontSize: 10, color: "var(--warning)", letterSpacing: "0.04em", lineHeight: 1.6 }}>
+                ⚠ Session ended due to tab-switching. Locked out for 5 hours.
               </div>
             )}
+          </div>
 
-            <div className="mx-auto mt-8 grid max-w-xl grid-cols-3 gap-3">
-              <Stat label="Score" value={`${data.attempt.percentage}%`} highlight={passed} />
-              <Stat label="Correct" value={`${summary.correct} / ${data.attempt.total}`} />
-              <Stat label="Time" value={formatDuration(data.attempt.durationSec)} />
+          {/* Score panel */}
+          <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 6 }}>
+            <div style={{ fontSize: "clamp(72px, 10vw, 108px)", fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1, color: passed ? "var(--primary)" : "var(--destructive)" }}>
+              {data.attempt.percentage}%
             </div>
-
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Button asChild variant="outline">
-                <Link to="/">
-                  <Home className="mr-2 h-4 w-4" /> Home
-                </Link>
-              </Button>
-              {passed && (
-                <Button
-                  onClick={downloadCertificate}
-                  className="bg-gradient-primary text-primary-foreground hover:opacity-90"
-                  style={{ boxShadow: "var(--shadow-glow)" }}
-                >
-                  <Download className="mr-2 h-4 w-4" /> Download certificate
-                </Button>
-              )}
-              {!passed && !data.isFinal && (
-                <Button
-                  asChild
-                  className="bg-gradient-primary text-primary-foreground hover:opacity-90"
-                  style={{ boxShadow: "var(--shadow-glow)" }}
-                >
-                  <Link to="/">
-                    <RotateCcw className="mr-2 h-4 w-4" /> Retake exam
-                  </Link>
-                </Button>
-              )}
+            <div style={{ ...mono, fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--muted-foreground)" }}>
+              {data.attempt.score} / {data.attempt.total} CORRECT
+            </div>
+            <div style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)", marginTop: 4 }}>
+              ATTEMPT {data.attempt.attemptNumber} OF 3 · {formatDuration(data.attempt.durationSec)}
             </div>
           </div>
-        </Card>
+        </div>
 
-        {/* Attempt history */}
-        <Card className="bg-gradient-surface mt-6 border-border p-6">
-          <h2 className="text-lg font-semibold">Attempt history</h2>
-          <div className="mt-4 space-y-2">
-            {data.attemptsHistory.map((a) => (
-              <div
-                key={a.attemptNumber}
-                className="flex items-center justify-between rounded-lg border border-border bg-card/60 px-4 py-3 text-sm"
-              >
-                <span className="font-medium">Attempt {a.attemptNumber}</span>
-                <div className="flex items-center gap-3">
-                  <span className="font-bold tabular-nums">{a.percentage}%</span>
-                  <span
-                    className={cn(
-                      "rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                      a.passed
-                        ? "bg-primary/15 text-primary"
-                        : "bg-destructive/15 text-destructive",
-                    )}
-                  >
-                    {a.passed ? "PASS" : "FAIL"}
-                  </span>
-                </div>
+        {/* STATS ROW */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", border, marginBottom: 24 }}>
+          {[
+            [String(summary.correct), "Correct"],
+            [String(summary.incorrect), "Incorrect"],
+            [String(summary.skipped), "Skipped"],
+            [formatDuration(data.attempt.durationSec), "Duration"],
+          ].map(([val, lbl], i) => (
+            <div key={i} style={{ padding: "20px 24px", borderRight: i < 3 ? border : "none", background: "var(--surface-elevated)" }}>
+              <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.03em" }}>{val}</div>
+              <div style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "var(--muted-foreground)", marginTop: 4 }}>{lbl}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ACTIONS */}
+        <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+          {passed && (
+            <button onClick={downloadCertificate}
+              style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", padding: "12px 22px", background: "var(--primary)", color: "#fff", border: "1.5px solid var(--primary)", cursor: "pointer" }}>
+              DOWNLOAD CERTIFICATE →
+            </button>
+          )}
+          {!passed && !data.isFinal && (
+            <Link to="/" style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", padding: "12px 22px", background: "var(--primary)", color: "#fff", border: "1.5px solid var(--primary)", textDecoration: "none", display: "inline-block" }}>
+              RETAKE EXAM →
+            </Link>
+          )}
+          <Link to="/" style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", padding: "12px 22px", background: "transparent", color: "var(--foreground)", border, textDecoration: "none", display: "inline-block" }}>
+            ← HOME
+          </Link>
+        </div>
+
+        {/* ATTEMPT HISTORY */}
+        <div style={{ border, marginBottom: 24 }}>
+          <div style={{ padding: "16px 24px", borderBottom: border, background: "var(--surface-elevated)" }}>
+            <span style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>ATTEMPT HISTORY</span>
+          </div>
+          {data.attemptsHistory.map((a) => (
+            <div key={a.attemptNumber} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px", borderBottom: "1px solid var(--muted)" }}>
+              <span style={{ ...mono, fontSize: 10, letterSpacing: "0.06em" }}>ATTEMPT {a.attemptNumber}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <span style={{ fontWeight: 700, fontSize: 16, letterSpacing: "-0.02em" }}>{a.percentage}%</span>
+                <span style={{ ...mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", padding: "3px 10px", background: a.passed ? "rgba(92,148,13,0.12)" : "rgba(204,34,0,0.08)", color: a.passed ? "var(--primary)" : "var(--destructive)", border: `1px solid ${a.passed ? "var(--primary)" : "var(--destructive)"}` }}>
+                  {a.passed ? "PASS" : "FAIL"}
+                </span>
               </div>
-            ))}
-          </div>
-        </Card>
+            </div>
+          ))}
+        </div>
 
-        {/* Review (only when isFinal — i.e. passed or used all 3) */}
+        {/* ANSWER REVIEW (final only) */}
         {data.isFinal && (
-          <Card className="bg-gradient-surface mt-6 border-border p-6">
-            <button
-              onClick={() => setShowReview((s) => !s)}
-              className="flex w-full items-center justify-between text-left"
-            >
+          <div style={{ border }}>
+            <button onClick={() => setShowReview((s) => !s)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "var(--surface-elevated)", border: "none", borderBottom: showReview ? border : "none", cursor: "pointer" }}>
               <div>
-                <h2 className="text-lg font-semibold">Answer review</h2>
-                <p className="text-xs text-muted-foreground">
-                  Now that you've finished, here are the correct answers for every question.
-                </p>
+                <span style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em" }}>ANSWER REVIEW</span>
+                <p style={{ ...mono, fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.04em", marginTop: 2 }}>Correct answers revealed — exam completed.</p>
               </div>
-              {showReview ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              <span style={{ ...mono, fontSize: 12, color: "var(--primary)" }}>{showReview ? "▲" : "▼"}</span>
             </button>
             {showReview && (
-              <div className="mt-5 space-y-4">
+              <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
                 {data.review.map((item, i) => {
                   const correct = item.given === item.correct;
-                  const skipped = !item.given;
                   return (
-                    <div
-                      key={`${item.id}-${i}`}
-                      className={cn(
-                        "rounded-xl border p-4",
-                        correct
-                          ? "border-primary/30 bg-primary/5"
-                          : "border-destructive/30 bg-destructive/5",
-                      )}
-                    >
-                      <div className="mb-2 flex items-start justify-between gap-3">
-                        <p className="text-sm font-semibold text-foreground">
-                          Q{i + 1}. {item.question}
-                        </p>
-                        {correct ? (
-                          <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
-                        ) : (
-                          <XCircle className="h-5 w-5 shrink-0 text-destructive" />
-                        )}
+                    <div key={`${item.id}-${i}`} style={{ border: `1.5px solid ${correct ? "var(--primary)" : "var(--destructive)"}`, padding: "16px 18px", background: correct ? "rgba(92,148,13,0.04)" : "rgba(204,34,0,0.04)" }}>
+                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+                        <p style={{ fontWeight: 600, fontSize: 13, lineHeight: 1.5 }}>Q{i + 1}. {item.question}</p>
+                        <span style={{ ...mono, fontSize: 9, fontWeight: 700, color: correct ? "var(--primary)" : "var(--destructive)", flexShrink: 0 }}>{correct ? "✓" : "✗"}</span>
                       </div>
-                      <div className="space-y-1.5 text-sm">
+                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                         {item.options.map((opt) => {
                           const isCorrect = opt.key === item.correct;
-                          const isGiven = opt.key === item.given;
+                          const isGiven   = opt.key === item.given;
                           return (
-                            <div
-                              key={opt.key}
-                              className={cn(
-                                "flex items-start gap-2 rounded-md px-3 py-1.5",
-                                isCorrect && "bg-primary/15 text-primary",
-                                isGiven && !isCorrect && "bg-destructive/15 text-destructive",
-                              )}
-                            >
-                              <span className="font-bold">{opt.key[0]}.</span>
-                              <span>{opt.label}</span>
-                              {isCorrect && <span className="ml-auto text-xs font-semibold">✓ correct</span>}
-                              {isGiven && !isCorrect && (
-                                <span className="ml-auto text-xs font-semibold">your answer</span>
-                              )}
+                            <div key={opt.key} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 10px", background: isCorrect ? "rgba(92,148,13,0.1)" : isGiven && !isCorrect ? "rgba(204,34,0,0.08)" : "transparent" }}>
+                              <span style={{ ...mono, fontSize: 9, fontWeight: 700, color: isCorrect ? "var(--primary)" : isGiven && !isCorrect ? "var(--destructive)" : "var(--muted-foreground)" }}>{opt.key[0]}.</span>
+                              <span style={{ fontSize: 12, color: "var(--foreground)" }}>{opt.label}</span>
+                              {isCorrect && <span style={{ ...mono, fontSize: 8, color: "var(--primary)", fontWeight: 700, marginLeft: "auto" }}>CORRECT</span>}
+                              {isGiven && !isCorrect && <span style={{ ...mono, fontSize: 8, color: "var(--destructive)", fontWeight: 700, marginLeft: "auto" }}>YOUR ANSWER</span>}
                             </div>
                           );
                         })}
-                        {skipped && (
-                          <p className="text-xs italic text-muted-foreground">You did not answer this question.</p>
-                        )}
+                        {!item.given && <p style={{ ...mono, fontSize: 10, color: "var(--muted-foreground)", fontStyle: "italic" }}>Not answered.</p>}
                       </div>
                     </div>
                   );
                 })}
               </div>
             )}
-          </Card>
+          </div>
         )}
-
-        {/* Hidden cert template (kept for visual reference) */}
-        <div ref={certRef} className="sr-only" aria-hidden />
       </div>
-    </div>
-  );
-}
 
-function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className="rounded-xl border border-border bg-card/60 p-4">
-      <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={cn("mt-1 text-2xl font-bold tabular-nums", highlight && "text-primary text-glow")}>{value}</p>
+      {/* FOOTER */}
+      <footer style={{ padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: border, marginTop: 24 }}>
+        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM MASTERCLASS</span>
+        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--primary)", fontWeight: 700 }}>EXAM-ACE-PRO_</span>
+      </footer>
     </div>
   );
 }
 
 function certificateHtml(identity: UserIdentity, attempt: AttemptRecord): string {
-  const date = new Date(attempt.completedAt).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const date = new Date(attempt.completedAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
   const safeName = identity.name.replace(/[<>]/g, "");
   return `<!doctype html>
 <html><head><meta charset="utf-8"/><title>TPM Masterclass Certificate — ${safeName}</title>
 <style>
   @page { size: A4 landscape; margin: 0; }
-  body { margin: 0; font-family: Georgia, "Times New Roman", serif; background: #0b1220; color: #e5f7e5; }
-  .cert { box-sizing: border-box; width: 297mm; height: 210mm; padding: 40mm 30mm; background:
-    radial-gradient(circle at 20% 0%, rgba(134,255,154,0.18), transparent 50%),
-    radial-gradient(circle at 80% 100%, rgba(110,200,255,0.12), transparent 50%),
-    #0b1220;
-    border: 2px solid #86ff9a; position: relative; }
-  .badge { position: absolute; top: 24mm; left: 50%; transform: translateX(-50%); padding: 6px 14px; background:#86ff9a; color:#0b1220; font-family: system-ui; font-weight:800; letter-spacing:2px; font-size: 11px; border-radius: 999px; }
-  h1 { font-size: 56px; margin: 0; text-align: center; color: #86ff9a; letter-spacing: 4px; }
-  .sub { text-align:center; color:#9ca3af; font-family: system-ui; margin-top: 6px; font-size: 13px; letter-spacing: 3px; text-transform: uppercase;}
-  .line { height: 1px; background: rgba(134,255,154,0.4); margin: 28px auto; width: 60%; }
-  .name { font-size: 64px; text-align: center; margin: 18px 0 6px; color: #fff; }
-  .desc { text-align: center; color: #d1d5db; font-size: 16px; max-width: 70%; margin: 0 auto; line-height: 1.6; font-family: system-ui;}
-  .score { text-align:center; margin-top: 26px; }
-  .score b { font-size: 36px; color: #86ff9a; }
-  .footer { position: absolute; bottom: 28mm; left: 30mm; right: 30mm; display:flex; justify-content: space-between; align-items: end; font-family: system-ui; color: #9ca3af; font-size: 12px;}
-  .sig { width: 40%; text-align: center; }
-  .sig .ln { border-top: 1px solid #4b5563; margin-bottom: 4px; padding-top: 6px; color: #fff;}
-  @media print { body { background: #0b1220; } }
+  body { margin: 0; font-family: "Space Grotesk", system-ui, sans-serif; background: #e6e4d9; color: #1a1a1a; }
+  .cert { box-sizing: border-box; width: 297mm; height: 210mm; padding: 32mm 28mm; background: #e6e4d9; border: 3px solid #1a1a1a; position: relative; }
+  .badge { position: absolute; top: 18mm; left: 50%; transform: translateX(-50%); padding: 5px 14px; background: #5c940d; color: #fff; font-family: monospace; font-weight: 800; letter-spacing: 3px; font-size: 10px; }
+  h1 { font-size: 60px; margin: 0; text-align: center; color: #1a1a1a; letter-spacing: -2px; text-transform: uppercase; font-weight: 700; }
+  .sub { text-align: center; color: #5c5a50; font-family: monospace; margin-top: 4px; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; }
+  .line { height: 1.5px; background: #1a1a1a; margin: 22px auto; width: 55%; }
+  .name { font-size: 58px; text-align: center; margin: 14px 0 4px; color: #5c940d; font-weight: 700; letter-spacing: -1px; text-transform: uppercase; }
+  .desc { text-align: center; color: #5c5a50; font-size: 13px; max-width: 65%; margin: 0 auto; line-height: 1.6; font-family: monospace; }
+  .score { text-align: center; margin-top: 20px; } .score b { font-size: 32px; color: #5c940d; }
+  .footer { position: absolute; bottom: 22mm; left: 28mm; right: 28mm; display: flex; justify-content: space-between; align-items: end; font-family: monospace; color: #5c5a50; font-size: 10px; }
+  .sig { width: 38%; text-align: center; } .sig .ln { border-top: 1.5px solid #1a1a1a; margin-bottom: 4px; padding-top: 6px; color: #1a1a1a; }
 </style></head>
-<body>
-  <div class="cert">
-    <div class="badge">TPM MASTERCLASS</div>
-    <h1>CERTIFICATE</h1>
-    <div class="sub">of Completion</div>
-    <div class="line"></div>
-    <div class="desc">This certifies that</div>
-    <div class="name">${safeName}</div>
-    <div class="desc">has successfully completed the Technical Product Manager Masterclass certification exam, demonstrating mastery of product discovery, requirements, prioritization, and execution.</div>
-    <div class="score">Final score: <b>${attempt.percentage}%</b></div>
-    <div class="footer">
-      <div class="sig"><div class="ln">${date}</div>Date</div>
-      <div class="sig"><div class="ln">Olushola Oluyomi</div>Program Lead</div>
-    </div>
+<body><div class="cert">
+  <div class="badge">TPM MASTERCLASS</div>
+  <h1>CERTIFICATE</h1><div class="sub">of Completion</div><div class="line"></div>
+  <div class="desc">This certifies that</div>
+  <div class="name">${safeName}</div>
+  <div class="desc">has successfully completed the Technical Product Manager Masterclass certification exam, demonstrating mastery of product discovery, requirements, prioritisation, and execution.</div>
+  <div class="score">Final score: <b>${attempt.percentage}%</b></div>
+  <div class="footer">
+    <div class="sig"><div class="ln">${date}</div>Date</div>
+    <div class="sig"><div class="ln">Olushola Oluyomi</div>Program Lead</div>
   </div>
-  <script>setTimeout(function(){window.print();}, 400);</script>
+</div><script>setTimeout(function(){window.print();},400);</script>
 </body></html>`;
 }

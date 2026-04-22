@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResultRouteImport } from './routes/result'
 import { Route as ExamRouteImport } from './routes/exam'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiSendResultRouteImport } from './routes/api/send-result'
 
 const ResultRoute = ResultRouteImport.update({
   id: '/result',
@@ -29,44 +28,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSendResultRoute = ApiSendResultRouteImport.update({
-  id: '/api/send-result',
-  path: '/api/send-result',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/exam': typeof ExamRoute
   '/result': typeof ResultRoute
-  '/api/send-result': typeof ApiSendResultRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/exam': typeof ExamRoute
   '/result': typeof ResultRoute
-  '/api/send-result': typeof ApiSendResultRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/exam': typeof ExamRoute
   '/result': typeof ResultRoute
-  '/api/send-result': typeof ApiSendResultRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/exam' | '/result' | '/api/send-result'
+  fullPaths: '/' | '/exam' | '/result'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/exam' | '/result' | '/api/send-result'
-  id: '__root__' | '/' | '/exam' | '/result' | '/api/send-result'
+  to: '/' | '/exam' | '/result'
+  id: '__root__' | '/' | '/exam' | '/result'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExamRoute: typeof ExamRoute
   ResultRoute: typeof ResultRoute
-  ApiSendResultRoute: typeof ApiSendResultRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,13 +82,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/send-result': {
-      id: '/api/send-result'
-      path: '/api/send-result'
-      fullPath: '/api/send-result'
-      preLoaderRoute: typeof ApiSendResultRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -106,7 +89,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExamRoute: ExamRoute,
   ResultRoute: ResultRoute,
-  ApiSendResultRoute: ApiSendResultRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
