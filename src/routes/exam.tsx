@@ -298,17 +298,25 @@ function ExamPage() {
 
           <span style={{ ...mono, fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.08em" }}>AUTO-SAVED</span>
 
-          {currentIdx < order.length - 1 ? (
-            <button onClick={() => setCurrentIdx((i) => Math.min(order.length - 1, i + 1))}
-              style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 18px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: "pointer" }}>
-              NEXT →
-            </button>
-          ) : (
-            <button onClick={() => setConfirmSubmit(true)} disabled={submitting}
-              style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 20px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: submitting ? "wait" : "pointer" }}>
-              {submitting ? "SUBMITTING…" : "SUBMIT EXAM →"}
-            </button>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {currentIdx < order.length - 1 && (
+              <button onClick={() => setConfirmSubmit(true)} disabled={submitting}
+                style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 16px", border, background: "transparent", cursor: submitting ? "not-allowed" : "pointer", color: "var(--foreground)" }}>
+                SUBMIT →
+              </button>
+            )}
+            {currentIdx < order.length - 1 ? (
+              <button onClick={() => setCurrentIdx((i) => Math.min(order.length - 1, i + 1))}
+                style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 18px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: "pointer" }}>
+                NEXT →
+              </button>
+            ) : (
+              <button onClick={() => setConfirmSubmit(true)} disabled={submitting}
+                style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 20px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: submitting ? "wait" : "pointer" }}>
+                {submitting ? "SUBMITTING…" : "SUBMIT EXAM →"}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Question palette */}

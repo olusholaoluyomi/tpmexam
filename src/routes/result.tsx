@@ -22,6 +22,7 @@ function ResultPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<ResultPayload | null>(null);
   const [showReview, setShowReview] = useState(false);
+  const [showWrong, setShowWrong] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("tpm-cbt:last-review");
@@ -40,6 +41,11 @@ function ResultPage() {
       skipped:   data.review.filter((r) => !r.given).length,
     };
   }, [data]);
+
+  const wrongAnswers = useMemo(
+    () => data?.review.filter((r) => r.given !== r.correct) ?? [],
+    [data],
+  );
 
   const downloadCertificate = () => {
     if (!data) return;
@@ -170,6 +176,50 @@ function ResultPage() {
             </div>
           ))}
         </div>
+
+        {/* WRONG ANSWERS REVIEW */}
+        {wrongAnswers.length > 0 && (
+          <div style={{ border, marginBottom: 24 }}>
+            <button onClick={() => setShowWrong((s) => !s)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px", background: "var(--surface-elevated)", border: "none", borderBottom: showWrong ? border : "none", cursor: "pointer" }}>
+              <div>
+                <span style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em" }}>
+                  WRONG ANSWERS — {wrongAnswers.length} QUESTION{wrongAnswers.length !== 1 ? "S" : ""}
+                </span>
+                <p style={{ ...mono, fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.04em", marginTop: 2 }}>
+                  Questions you answered incorrectly or skipped — correct answers shown.
+                </p>
+              </div>
+              <span style={{ ...mono, fontSize: 12, color: "var(--destructive)" }}>{showWrong ? "▲" : "▼"}</span>
+            </button>
+            {showWrong && (
+              <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+                {wrongAnswers.map((item) => (
+                  <div key={item.id} style={{ border: "1.5px solid var(--destructive)", padding: "16px 18px", background: "rgba(204,34,0,0.04)" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+                      <p style={{ fontWeight: 600, fontSize: 13, lineHeight: 1.5 }}>{item.question}</p>
+                      <span style={{ ...mono, fontSize: 9, fontWeight: 700, color: "var(--destructive)", flexShrink: 0 }}>✗</span>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      {item.options.map((opt) => {
+                        const isCorrect = opt.key === item.correct;
+                        const isGiven   = opt.key === item.given;
+                        return (
+                          <div key={opt.key} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 10px", background: isCorrect ? "rgba(92,148,13,0.1)" : isGiven && !isCorrect ? "rgba(204,34,0,0.08)" : "transparent" }}>
+                            <span style={{ ...mono, fontSize: 9, fontWeight: 700, color: isCorrect ? "var(--primary)" : isGiven && !isCorrect ? "var(--destructive)" : "var(--muted-foreground)" }}>{opt.key[0]}.</span>
+                            <span style={{ fontSize: 12, color: "var(--foreground)" }}>{opt.label}</span>
+                            {isCorrect && <span style={{ ...mono, fontSize: 8, color: "var(--primary)", fontWeight: 700, marginLeft: "auto" }}>CORRECT</span>}
+                            {isGiven && !isCorrect && <span style={{ ...mono, fontSize: 8, color: "var(--destructive)", fontWeight: 700, marginLeft: "auto" }}>YOUR ANSWER</span>}
+                          </div>
+                        );
+                      })}
+                      {!item.given && <p style={{ ...mono, fontSize: 10, color: "var(--muted-foreground)", fontStyle: "italic" }}>Not answered.</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ANSWER REVIEW (final only) */}
         {data.isFinal && (
