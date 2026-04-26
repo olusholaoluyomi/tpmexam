@@ -112,6 +112,26 @@ function ExamPage() {
       attemptsHistory: updated.attempts.map((a) => ({ attemptNumber: a.attemptNumber, percentage: a.percentage, passed: a.passed })),
     }));
     sessionStorage.removeItem("tpm-cbt:active-identity");
+
+    // Fire-and-forget: send attempt to server for admin analytics
+    fetch("/api/save-attempt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: identity.name,
+        email: identity.email,
+        attemptNumber: attempt.attemptNumber,
+        score: attempt.score,
+        total: attempt.total,
+        percentage: attempt.percentage,
+        passed: attempt.passed,
+        completedAt: attempt.completedAt,
+        durationSec: attempt.durationSec,
+        cheatSwaps: swapsRef.current,
+        cheatLock: opts?.cheatLock ?? false,
+      }),
+    }).catch(() => { /* analytics failure should never block the user */ });
+
     navigate({ to: "/result" });
   }, [identity, order, answers, navigate]);
 
