@@ -93,7 +93,7 @@ function ExamPage() {
       const given = answers[q.id];
       const correct = given === q.correct;
       if (correct) score += q.points;
-      return { id: q.id, question: q.question, options: q.options, given: given ?? null, correct: q.correct };
+      return { id: q.id, question: q.question, options: q.options, given: given ?? null, correct: q.correct, explanation: q.explanation };
     });
     const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
     const passed = percentage >= PASS_THRESHOLD;

@@ -6,7 +6,7 @@ import { formatDuration } from "@/lib/utils-exam";
 const mono: React.CSSProperties = { fontFamily: "var(--font-mono)" };
 const border = "1.5px solid var(--border)";
 
-interface ReviewItem { id: number; question: string; options: { key: string; label: string }[]; given: string | null; correct: string; }
+interface ReviewItem { id: number; question: string; options: { key: string; label: string }[]; given: string | null; correct: string; explanation?: string; }
 interface ResultPayload {
   identity: UserIdentity; attempt: AttemptRecord; isFinal: boolean;
   autoSubmitted: boolean; cheatLock: boolean; review: ReviewItem[];
@@ -214,6 +214,12 @@ function ResultPage() {
                       })}
                       {!item.given && <p style={{ ...mono, fontSize: 14, color: "var(--muted-foreground)", fontStyle: "italic" }}>Not answered.</p>}
                     </div>
+                    {item.explanation && (
+                      <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(92,148,13,0.07)", borderLeft: "3px solid var(--primary)" }}>
+                        <span style={{ ...mono, fontSize: 11, fontWeight: 700, color: "var(--primary)", letterSpacing: "0.1em", display: "block", marginBottom: 4 }}>WHY THIS IS CORRECT</span>
+                        <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--foreground)", margin: 0 }}>{item.explanation}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -256,6 +262,12 @@ function ResultPage() {
                         })}
                         {!item.given && <p style={{ ...mono, fontSize: 14, color: "var(--muted-foreground)", fontStyle: "italic" }}>Not answered.</p>}
                       </div>
+                      {item.explanation && (
+                        <div style={{ marginTop: 12, padding: "10px 14px", background: "rgba(92,148,13,0.07)", borderLeft: "3px solid var(--primary)" }}>
+                          <span style={{ ...mono, fontSize: 11, fontWeight: 700, color: "var(--primary)", letterSpacing: "0.1em", display: "block", marginBottom: 4 }}>WHY THIS IS CORRECT</span>
+                          <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--foreground)", margin: 0 }}>{item.explanation}</p>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
