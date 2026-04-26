@@ -47,11 +47,12 @@ function ExamPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
 
-  const startedAtRef  = useRef<number>(Date.now());
-  const submittedRef  = useRef(false);
-  const swapsRef      = useRef(0);
-  const usedIdsRef    = useRef<Set<number>>(new Set());
-  const currentIdxRef = useRef(0);
+  const startedAtRef   = useRef<number>(Date.now());
+  const submittedRef   = useRef(false);
+  const swapsRef       = useRef(0);
+  const usedIdsRef     = useRef<Set<number>>(new Set());
+  const currentIdxRef  = useRef(0);
+  const cheatCooldownRef = useRef(false);
 
   useEffect(() => { currentIdxRef.current = currentIdx; }, [currentIdx]);
 
@@ -120,6 +121,12 @@ function ExamPage() {
   // Anti-cheat
   const handleCheatEvent = useCallback(() => {
     if (submittedRef.current || order.length === 0) return;
+    // Debounce: visibilitychange and blur both fire on a single tab switch;
+    // ignore the second event within 500ms so one switch = one penalty.
+    if (cheatCooldownRef.current) return;
+    cheatCooldownRef.current = true;
+    setTimeout(() => { cheatCooldownRef.current = false; }, 500);
+
     const newCount = swapsRef.current + 1;
     swapsRef.current = newCount;
     setCheatSwaps(newCount);
@@ -128,8 +135,9 @@ function ExamPage() {
       setTimeout(() => submit(true, { cheatLock: true }), 1200);
       return;
     }
+    const idx = currentIdxRef.current;
+    const replacedId = order[idx]?.id;
     setOrder((prev) => {
-      const idx = currentIdxRef.current;
       const cur = prev[idx];
       if (!cur) return prev;
       const replacement = pickReplacement(ALL_QUESTIONS, usedIdsRef.current, cur.id);
@@ -139,12 +147,12 @@ function ExamPage() {
       next[idx] = { ...replacement, position: idx };
       return next;
     });
-    setAnswers((prev) => {
-      const cur = order[currentIdxRef.current];
-      if (!cur) return prev;
-      const { [cur.id]: _drop, ...rest } = prev;
-      return rest;
-    });
+    if (replacedId !== undefined) {
+      setAnswers((prev) => {
+        const { [replacedId]: _drop, ...rest } = prev;
+        return rest;
+      });
+    }
     setShowWarning(`Tab/window switch detected (${newCount}/${MAX_CHEAT_SWAPS}). Current question replaced.`);
   }, [order, submit]);
 

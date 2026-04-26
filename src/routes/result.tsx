@@ -47,7 +47,8 @@ function ResultPage() {
     const blob = new Blob([html], { type: "text/html" });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement("a");
-    a.href = url; a.download = `TPM-Certificate-${data.identity.name.replace(/\s+/g, "_")}.html`;
+    const safeName = data.identity.name.replace(/[^a-zA-Z0-9 _-]/g, "").trim().replace(/\s+/g, "_") || "certificate";
+    a.href = url; a.download = `TPM-Certificate-${safeName}.html`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   };
 
