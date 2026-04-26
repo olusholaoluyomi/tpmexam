@@ -67,7 +67,7 @@ function ExamPage() {
       navigate({ to: "/" }); return;
     }
     setIdentity(id);
-    const shuffled = shuffle(ALL_QUESTIONS).map((q, i) => ({ ...q, position: i }));
+    const shuffled = shuffle(ALL_QUESTIONS).slice(0, 100).map((q, i) => ({ ...q, position: i }));
     shuffled.forEach((q) => usedIdsRef.current.add(q.id));
     setOrder(shuffled);
     startedAtRef.current = Date.now();
