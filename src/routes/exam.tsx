@@ -183,7 +183,7 @@ function ExamPage() {
   if (!identity || !currentQ) {
     return (
       <div style={{ display: "flex", minHeight: "100vh", alignItems: "center", justifyContent: "center", background: "var(--background)" }}>
-        <div style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", color: "var(--muted-foreground)" }}>LOADING EXAM…</div>
+        <div style={{ ...mono, fontSize: 14, letterSpacing: "0.12em", color: "var(--muted-foreground)" }}>LOADING EXAM…</div>
       </div>
     );
   }
@@ -195,18 +195,18 @@ function ExamPage() {
       <header style={{ borderBottom: border, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", height: 52, background: "var(--background)", position: "sticky", top: 0, zIndex: 40 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 28, height: 28, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ ...mono, color: "#fff", fontSize: 9, fontWeight: 700 }}>TPM</span>
+            <span style={{ ...mono, color: "#fff", fontSize: 14, fontWeight: 700 }}>TPM</span>
           </div>
-          <span style={{ ...mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontWeight: 700 }}>EXAM IN PROGRESS_</span>
+          <span style={{ ...mono, fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase" as const, fontWeight: 700 }}>EXAM IN PROGRESS_</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span style={{ ...mono, fontSize: 10, letterSpacing: "0.06em", color: "var(--muted-foreground)" }}>
+          <span style={{ ...mono, fontSize: 13, letterSpacing: "0.06em", color: "var(--muted-foreground)" }}>
             {identity.name.toUpperCase()}
           </span>
-          <span style={{ ...mono, fontSize: 10, letterSpacing: "0.06em", color: "var(--muted-foreground)" }}>
+          <span style={{ ...mono, fontSize: 13, letterSpacing: "0.06em", color: "var(--muted-foreground)" }}>
             Q {currentIdx + 1}/{order.length}
           </span>
-          <span style={{ ...mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", padding: "5px 12px", border: `1.5px solid ${timeCrit ? "var(--destructive)" : timeWarn ? "var(--warning)" : "var(--border)"}`, color: timeCrit ? "var(--destructive)" : timeWarn ? "var(--warning)" : "var(--foreground)", background: timeCrit ? "rgba(204,34,0,0.08)" : "transparent" }}>
+          <span style={{ ...mono, fontSize: 14, fontWeight: 700, letterSpacing: "0.06em", padding: "5px 12px", border: `1.5px solid ${timeCrit ? "var(--destructive)" : timeWarn ? "var(--warning)" : "var(--border)"}`, color: timeCrit ? "var(--destructive)" : timeWarn ? "var(--warning)" : "var(--foreground)", background: timeCrit ? "rgba(204,34,0,0.08)" : "transparent" }}>
             ⏱ {formatDuration(timeLeft)}
           </span>
         </div>
@@ -220,14 +220,14 @@ function ExamPage() {
       {/* ── CHEAT WARNING ── */}
       {cheatSwaps > 0 && (
         <div style={{ background: "rgba(184,92,0,0.08)", borderBottom: "1.5px solid var(--warning)", padding: "8px 32px", display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ ...mono, fontSize: 10, color: "var(--warning)", letterSpacing: "0.06em", fontWeight: 700 }}>
+          <span style={{ ...mono, fontSize: 13, color: "var(--warning)", letterSpacing: "0.06em", fontWeight: 700 }}>
             ⚠ TAB-SWITCH WARNINGS: {cheatSwaps}/{MAX_CHEAT_SWAPS}
           </span>
         </div>
       )}
       {showWarning && (
         <div style={{ background: "rgba(204,34,0,0.07)", borderBottom: "1.5px solid var(--destructive)", padding: "10px 32px" }}>
-          <span style={{ ...mono, fontSize: 11, color: "var(--destructive)", letterSpacing: "0.04em" }}>⛔ {showWarning}</span>
+          <span style={{ ...mono, fontSize: 14, color: "var(--destructive)", letterSpacing: "0.04em" }}>⛔ {showWarning}</span>
         </div>
       )}
 
@@ -243,7 +243,7 @@ function ExamPage() {
           ].map(([val, lbl], i) => (
             <div key={i} style={{ paddingRight: 24, paddingLeft: i > 0 ? 24 : 0, borderRight: i < 2 ? border : "none" }}>
               <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>{val}</div>
-              <div style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "var(--muted-foreground)", marginTop: 2 }}>{lbl}</div>
+              <div style={{ ...mono, fontSize: 14, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "var(--muted-foreground)", marginTop: 2 }}>{lbl}</div>
             </div>
           ))}
         </div>
@@ -251,8 +251,8 @@ function ExamPage() {
         {/* Question card */}
         <div style={{ border, padding: "32px 32px 28px", background: "var(--surface-elevated)", marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
-            <span style={{ ...mono, fontSize: 10, color: "var(--primary)", fontWeight: 700, letterSpacing: "0.1em" }}>QUESTION {currentIdx + 1}</span>
-            <span style={{ ...mono, fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>{currentQ.points} PT</span>
+            <span style={{ ...mono, fontSize: 13, color: "var(--primary)", fontWeight: 700, letterSpacing: "0.1em" }}>QUESTION {currentIdx + 1}</span>
+            <span style={{ ...mono, fontSize: 14, color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>{currentQ.points} PT</span>
           </div>
           <h2 style={{ fontSize: "clamp(16px, 2.2vw, 19px)", fontWeight: 600, lineHeight: 1.5, margin: "0 0 28px", letterSpacing: "-0.01em" }}>
             {currentQ.question}
@@ -275,7 +275,7 @@ function ExamPage() {
                     width: 24, height: 24, flexShrink: 0, border: selected ? "2px solid var(--primary)" : border,
                     background: selected ? "var(--primary)" : "transparent",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    ...mono, fontSize: 10, fontWeight: 700, color: selected ? "#fff" : "var(--muted-foreground)",
+                    ...mono, fontSize: 13, fontWeight: 700, color: selected ? "#fff" : "var(--muted-foreground)",
                     marginTop: 1,
                   }}>
                     {opt.key.length === 1 ? opt.key : opt.key[0]}
@@ -292,27 +292,27 @@ function ExamPage() {
         {/* Nav */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => setCurrentIdx((i) => Math.max(0, i - 1))} disabled={currentIdx === 0}
-            style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 18px", border, background: "transparent", cursor: currentIdx === 0 ? "not-allowed" : "pointer", color: currentIdx === 0 ? "var(--muted-foreground)" : "var(--foreground)" }}>
+            style={{ ...mono, fontSize: 13, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 18px", border, background: "transparent", cursor: currentIdx === 0 ? "not-allowed" : "pointer", color: currentIdx === 0 ? "var(--muted-foreground)" : "var(--foreground)" }}>
             ← PREV
           </button>
 
-          <span style={{ ...mono, fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.08em" }}>AUTO-SAVED</span>
+          <span style={{ ...mono, fontSize: 14, color: "var(--muted-foreground)", letterSpacing: "0.08em" }}>AUTO-SAVED</span>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {currentIdx < order.length - 1 && (
               <button onClick={() => setConfirmSubmit(true)} disabled={submitting}
-                style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 16px", border, background: "transparent", cursor: submitting ? "not-allowed" : "pointer", color: "var(--foreground)" }}>
+                style={{ ...mono, fontSize: 13, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 16px", border, background: "transparent", cursor: submitting ? "not-allowed" : "pointer", color: "var(--foreground)" }}>
                 SUBMIT →
               </button>
             )}
             {currentIdx < order.length - 1 ? (
               <button onClick={() => setCurrentIdx((i) => Math.min(order.length - 1, i + 1))}
-                style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 18px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: "pointer" }}>
+                style={{ ...mono, fontSize: 13, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 18px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: "pointer" }}>
                 NEXT →
               </button>
             ) : (
               <button onClick={() => setConfirmSubmit(true)} disabled={submitting}
-                style={{ ...mono, fontSize: 10, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 20px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: submitting ? "wait" : "pointer" }}>
+                style={{ ...mono, fontSize: 13, letterSpacing: "0.08em", fontWeight: 700, padding: "10px 20px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: submitting ? "wait" : "pointer" }}>
                 {submitting ? "SUBMITTING…" : "SUBMIT EXAM →"}
               </button>
             )}
@@ -321,7 +321,7 @@ function ExamPage() {
 
         {/* Question palette */}
         <div style={{ border, padding: "20px 24px", marginTop: 24, background: "var(--surface-elevated)" }}>
-          <p style={{ ...mono, fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--muted-foreground)", marginBottom: 14 }}>QUESTION PALETTE</p>
+          <p style={{ ...mono, fontSize: 14, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--muted-foreground)", marginBottom: 14 }}>QUESTION PALETTE</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {order.map((q, i) => {
               const isAnswered = answers[q.id] !== undefined;
@@ -329,7 +329,7 @@ function ExamPage() {
               return (
                 <button key={`${q.id}-${i}`} onClick={() => setCurrentIdx(i)}
                   style={{
-                    width: 30, height: 30, ...mono, fontSize: 9, fontWeight: 700, cursor: "pointer",
+                    width: 30, height: 30, ...mono, fontSize: 14, fontWeight: 700, cursor: "pointer",
                     border: isCurrent ? "2px solid var(--primary)" : border,
                     background: isCurrent ? "var(--primary)" : isAnswered ? "rgba(92,148,13,0.12)" : "transparent",
                     color: isCurrent ? "#fff" : isAnswered ? "var(--primary)" : "var(--muted-foreground)",
@@ -346,19 +346,19 @@ function ExamPage() {
       {confirmSubmit && (
         <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(230,228,217,0.85)", backdropFilter: "blur(2px)", padding: "0 24px" }}>
           <div style={{ border, background: "var(--card)", padding: "36px 32px", maxWidth: 440, width: "100%" }}>
-            <p style={{ ...mono, fontSize: 10, color: "var(--primary)", fontWeight: 700, letterSpacing: "0.1em", marginBottom: 16 }}>CONFIRM SUBMISSION</p>
+            <p style={{ ...mono, fontSize: 13, color: "var(--primary)", fontWeight: 700, letterSpacing: "0.1em", marginBottom: 16 }}>CONFIRM SUBMISSION</p>
             <h3 style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", marginBottom: 10 }}>Submit exam?</h3>
-            <p style={{ ...mono, fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.7 }}>
+            <p style={{ ...mono, fontSize: 14, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.7 }}>
               You answered <strong style={{ color: "var(--foreground)" }}>{answered}</strong> of <strong style={{ color: "var(--foreground)" }}>{order.length}</strong> questions.
               Unanswered questions score zero.
             </p>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 24 }}>
               <button onClick={() => setConfirmSubmit(false)} disabled={submitting}
-                style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", padding: "10px 18px", border, background: "transparent", cursor: "pointer" }}>
+                style={{ ...mono, fontSize: 13, fontWeight: 700, letterSpacing: "0.1em", padding: "10px 18px", border, background: "transparent", cursor: "pointer" }}>
                 KEEP GOING
               </button>
               <button onClick={() => submit(false)} disabled={submitting}
-                style={{ ...mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", padding: "10px 20px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: submitting ? "wait" : "pointer" }}>
+                style={{ ...mono, fontSize: 13, fontWeight: 700, letterSpacing: "0.1em", padding: "10px 20px", border: "1.5px solid var(--primary)", background: "var(--primary)", color: "#fff", cursor: submitting ? "wait" : "pointer" }}>
                 {submitting ? "SUBMITTING…" : "SUBMIT →"}
               </button>
             </div>

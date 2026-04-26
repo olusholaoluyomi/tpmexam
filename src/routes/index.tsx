@@ -96,11 +96,11 @@ function LandingPage() {
       <nav style={{ borderBottom: border, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 32px", height: 52, background: "var(--background)", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 28, height: 28, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ ...mono, color: "#fff", fontSize: 9, fontWeight: 700 }}>TPM</span>
+            <span style={{ ...mono, color: "#fff", fontSize: 11, fontWeight: 700 }}>TPM</span>
           </div>
-          <span style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700 }}>PRACTICE TEST_</span>
+          <span style={{ ...mono, fontSize: 13, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700 }}>PRACTICE TEST_</span>
         </div>
-        <a href="#register" style={{ background: "var(--primary)", color: "#fff", ...mono, fontSize: 10, letterSpacing: "0.1em", padding: "8px 16px", fontWeight: 700, textDecoration: "none" }}>
+        <a href="#register" style={{ background: "var(--primary)", color: "#fff", ...mono, fontSize: 13, letterSpacing: "0.1em", padding: "8px 16px", fontWeight: 700, textDecoration: "none" }}>
           START EXAM →
         </a>
       </nav>
@@ -109,7 +109,7 @@ function LandingPage() {
       <div style={{ borderBottom: border, background: "var(--primary)", overflow: "hidden", height: 34, display: "flex", alignItems: "center" }}>
         <div className="ticker-track">
           {TICKER.map((t, i) => (
-            <span key={i} style={{ ...mono, fontSize: 10, fontWeight: 700, color: "#fff", letterSpacing: "0.14em", padding: "0 28px", borderRight: "1.5px solid rgba(255,255,255,0.3)", whiteSpace: "nowrap" }}>{t}</span>
+            <span key={i} style={{ ...mono, fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: "0.14em", padding: "0 28px", borderRight: "1.5px solid rgba(255,255,255,0.3)", whiteSpace: "nowrap" }}>{t}</span>
           ))}
         </div>
       </div>
@@ -120,13 +120,13 @@ function LandingPage() {
         {/* LEFT */}
         <div style={{ borderRight: border, padding: "56px 40px 48px", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 440 }}>
           <div>
-            <p style={{ ...mono, fontSize: 10, letterSpacing: "0.12em", color: "var(--muted-foreground)", marginBottom: 28 }}>
+            <p style={{ ...mono, fontSize: 12, letterSpacing: "0.12em", color: "var(--muted-foreground)", marginBottom: 28 }}>
               <span style={{ color: "var(--primary)", fontWeight: 700 }}>—— 01</span>{" "}CERTIFICATION EXAM · 2025
             </p>
             <h1 style={{ fontSize: "clamp(46px, 6.5vw, 84px)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "-0.03em", lineHeight: 0.9, margin: "0 0 24px" }}>
               TECHNICAL<br />PRODUCT<br /><span style={{ color: "var(--primary)" }}>MANAGER</span>
             </h1>
-            <p style={{ ...mono, fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.8, maxWidth: 340 }}>
+            <p style={{ ...mono, fontSize: 14, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.8, maxWidth: 340 }}>
               Prove your mastery. 100 questions across product discovery, requirements, prioritisation, and execution.
             </p>
           </div>
@@ -134,7 +134,7 @@ function LandingPage() {
             {[["100","Questions"],["60","Minutes"],["80%","To Pass"]].map(([n,l],i) => (
               <div key={i} style={{ paddingRight: 20, paddingLeft: i > 0 ? 20 : 0, borderRight: i < 2 ? border : "none" }}>
                 <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1 }}>{n}</div>
-                <div style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted-foreground)", marginTop: 4 }}>{l}</div>
+                <div style={{ ...mono, fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted-foreground)", marginTop: 4 }}>{l}</div>
               </div>
             ))}
           </div>
@@ -142,10 +142,10 @@ function LandingPage() {
 
         {/* RIGHT — Form */}
         <div id="register" style={{ padding: "56px 40px 48px", background: "var(--surface-elevated)" }}>
-          <p style={{ ...mono, fontSize: 10, letterSpacing: "0.12em", color: "var(--muted-foreground)", marginBottom: 8 }}>
+          <p style={{ ...mono, fontSize: 12, letterSpacing: "0.12em", color: "var(--muted-foreground)", marginBottom: 8 }}>
             <span style={{ color: "var(--primary)", fontWeight: 700 }}>—— 02</span>{" "}REGISTER TO START
           </p>
-          <p style={{ ...mono, fontSize: 10, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.7, marginBottom: 24 }}>
+          <p style={{ ...mono, fontSize: 13, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.7, marginBottom: 24 }}>
             Name + email + phone track attempts. All three must match on retakes.
           </p>
 
@@ -155,39 +155,39 @@ function LandingPage() {
             { key:"phone", label:"Phone",     type:"tel",   val:phone, set:setPhone, ph:"+234 800 000 0000",    max:30,  ac:"tel"   },
           ].map((f) => (
             <div key={f.key} style={{ borderTop: border, paddingTop: 12, paddingBottom: 4 }}>
-              <label style={{ ...mono, fontSize: 9, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--muted-foreground)", display: "block", marginBottom: 5 }}>{f.label}</label>
+              <label style={{ ...mono, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--muted-foreground)", display: "block", marginBottom: 5 }}>{f.label}</label>
               <Input type={f.type} value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.ph} maxLength={f.max} autoComplete={f.ac}
                 style={{ background: "transparent", border: "none", borderBottom: border, padding: "6px 0", fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 600, color: "var(--foreground)", outline: "none", borderRadius: 0, boxShadow: "none", width: "100%" }} />
-              {errors[f.key] && <p style={{ ...mono, fontSize: 10, color: "var(--destructive)", paddingTop: 3, letterSpacing: "0.06em" }}>{errors[f.key]}</p>}
+              {errors[f.key] && <p style={{ ...mono, fontSize: 13, color: "var(--destructive)", paddingTop: 3, letterSpacing: "0.06em" }}>{errors[f.key]}</p>}
             </div>
           ))}
 
           <div style={{ borderTop: border, padding: "14px 0" }}>
             <label style={{ display: "flex", gap: 10, cursor: "pointer", alignItems: "flex-start" }}>
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} style={{ marginTop: 2, accentColor: "var(--primary)", flexShrink: 0 }} />
-              <span style={{ ...mono, fontSize: 10, letterSpacing: "0.04em", color: "var(--muted-foreground)", lineHeight: 1.7 }}>
+              <span style={{ ...mono, fontSize: 13, letterSpacing: "0.04em", color: "var(--muted-foreground)", lineHeight: 1.7 }}>
                 I will stay in this tab. 5 tab-switches = 5-hour lockout. My identity is locked across all attempts.
               </span>
             </label>
-            {errors.agreed && <p style={{ ...mono, fontSize: 10, color: "var(--destructive)", paddingTop: 3 }}>{errors.agreed}</p>}
+            {errors.agreed && <p style={{ ...mono, fontSize: 13, color: "var(--destructive)", paddingTop: 3 }}>{errors.agreed}</p>}
           </div>
 
           {identity && userState && (
             <div style={{ borderTop: border, borderBottom: border, padding: "10px 0", display: "flex", gap: 20, flexWrap: "wrap" }}>
-              <span style={{ ...mono, fontSize: 10, color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>
+              <span style={{ ...mono, fontSize: 13, color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>
                 ATTEMPTS: <strong style={{ color: "var(--foreground)" }}>{userState.attempts.length}/3</strong>
               </span>
-              {best && <span style={{ ...mono, fontSize: 10, color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>
+              {best && <span style={{ ...mono, fontSize: 13, color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>
                 BEST: <strong style={{ color: best.passed ? "var(--primary)" : "var(--foreground)" }}>{best.percentage}%</strong>
                 {best.passed && <span style={{ color: "var(--primary)", marginLeft: 4 }}>✓ PASSED</span>}
               </span>}
-              {cheatLock.locked && <span style={{ ...mono, fontSize: 10, color: "var(--destructive)", letterSpacing: "0.06em" }}>LOCKED UNTIL {formatDate(cheatLock.until!).toUpperCase()}</span>}
-              {retakeLock.locked && <span style={{ ...mono, fontSize: 10, color: "var(--warning)", letterSpacing: "0.06em" }}>COOLDOWN UNTIL {formatDate(retakeLock.until!).toUpperCase()}</span>}
+              {cheatLock.locked && <span style={{ ...mono, fontSize: 13, color: "var(--destructive)", letterSpacing: "0.06em" }}>LOCKED UNTIL {formatDate(cheatLock.until!).toUpperCase()}</span>}
+              {retakeLock.locked && <span style={{ ...mono, fontSize: 13, color: "var(--warning)", letterSpacing: "0.06em" }}>COOLDOWN UNTIL {formatDate(retakeLock.until!).toUpperCase()}</span>}
             </div>
           )}
 
           {statusMsg && (
-            <div style={{ border: "1.5px solid var(--destructive)", padding: "10px 14px", marginTop: 10, ...mono, fontSize: 11, color: "var(--destructive)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+            <div style={{ border: "1.5px solid var(--destructive)", padding: "10px 14px", marginTop: 10, ...mono, fontSize: 13, color: "var(--destructive)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
               ⚠ {statusMsg}
             </div>
           )}
@@ -199,7 +199,7 @@ function LandingPage() {
                 background: isLocked ? "var(--muted)" : "var(--primary)",
                 color: isLocked ? "var(--muted-foreground)" : "#fff",
                 border: `1.5px solid ${isLocked ? "var(--muted)" : "var(--primary)"}`,
-                padding: "13px 26px", ...mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em",
+                padding: "13px 26px", ...mono, fontSize: 13, fontWeight: 700, letterSpacing: "0.12em",
                 textTransform: "uppercase", cursor: isLocked ? "not-allowed" : "pointer",
                 transition: "transform 0.15s ease, box-shadow 0.15s ease",
                 display: "inline-flex", alignItems: "center", gap: 8,
@@ -207,7 +207,7 @@ function LandingPage() {
               }}>
               {best?.passed ? "RETAKE EXAM" : "START EXAM"} →
             </button>
-            <span style={{ ...mono, fontSize: 9, color: "var(--muted-foreground)", letterSpacing: "0.08em" }}>
+            <span style={{ ...mono, fontSize: 12, color: "var(--muted-foreground)", letterSpacing: "0.08em" }}>
               {remaining > 0 ? `${remaining} attempt${remaining === 1 ? "" : "s"} left` : "No attempts left"}
             </span>
           </div>
@@ -224,9 +224,9 @@ function LandingPage() {
             ["[04]","ATTEMPTS","Up to 3 attempts. After 3 fails, a 2-week cooling period is enforced."],
           ].map(([num,title,body],i) => (
             <div key={i} style={{ borderRight: i < 3 ? border : "none", padding: "28px" }}>
-              <div style={{ ...mono, fontSize: 10, color: "var(--primary)", fontWeight: 700, letterSpacing: "0.08em", marginBottom: 10 }}>{num}</div>
-              <div style={{ fontWeight: 700, fontSize: 12, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 10 }}>{title}</div>
-              <p style={{ ...mono, fontSize: 10, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.75 }}>{body}</p>
+              <div style={{ ...mono, fontSize: 12, color: "var(--primary)", fontWeight: 700, letterSpacing: "0.08em", marginBottom: 10 }}>{num}</div>
+              <div style={{ fontWeight: 700, fontSize: 15, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 10 }}>{title}</div>
+              <p style={{ ...mono, fontSize: 13, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.75 }}>{body}</p>
             </div>
           ))}
         </div>
@@ -235,18 +235,18 @@ function LandingPage() {
       {/* ANTI-CHEAT BANNER */}
       <section style={{ background: "var(--foreground)", color: "var(--background)", padding: "22px 40px", borderBottom: border, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ background: "var(--primary)", color: "#fff", ...mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", padding: "4px 10px" }}>ANTI-CHEAT</span>
-          <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: "-0.01em", textTransform: "uppercase" }}>YOUR IDENTITY IS LOCKED ACROSS ALL ATTEMPTS.</span>
+          <span style={{ background: "var(--primary)", color: "#fff", ...mono, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", padding: "4px 10px" }}>ANTI-CHEAT</span>
+          <span style={{ fontWeight: 700, fontSize: 16, letterSpacing: "-0.01em", textTransform: "uppercase" }}>YOUR IDENTITY IS LOCKED ACROSS ALL ATTEMPTS.</span>
         </div>
-        <p style={{ ...mono, fontSize: 10, color: "rgba(230,228,217,0.55)", letterSpacing: "0.04em", lineHeight: 1.6, maxWidth: 480 }}>
+        <p style={{ ...mono, fontSize: 13, color: "rgba(230,228,217,0.7)", letterSpacing: "0.04em", lineHeight: 1.6, maxWidth: 480 }}>
           The system matches name, email, and phone across all stored attempts. Changing any field still links you to your existing record.
         </p>
       </section>
 
       {/* FOOTER */}
       <footer style={{ padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: border }}>
-        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM PRACTICE TEST</span>
-        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--primary)", fontWeight: 700 }}>EXAM-ACE-PRO_</span>
+        <span style={{ ...mono, fontSize: 11, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM PRACTICE TEST</span>
+        <span style={{ ...mono, fontSize: 11, letterSpacing: "0.1em", color: "var(--primary)", fontWeight: 700 }}>EXAM-ACE-PRO_</span>
       </footer>
     </div>
   );
