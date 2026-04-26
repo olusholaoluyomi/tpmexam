@@ -14,7 +14,7 @@ interface ResultPayload {
 }
 
 export const Route = createFileRoute("/result")({
-  head: () => ({ meta: [{ title: "Your result — TPM Masterclass" }] }),
+  head: () => ({ meta: [{ title: "Your result — Practice Test for Technical Product Managers" }] }),
   component: ResultPage,
 });
 
@@ -63,7 +63,7 @@ function ResultPage() {
           <div style={{ width: 28, height: 28, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ ...mono, color: "#fff", fontSize: 9, fontWeight: 700 }}>TPM</span>
           </div>
-          <span style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" as const, fontWeight: 700 }}>MASTERCLASS_</span>
+          <span style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" as const, fontWeight: 700 }}>PRACTICE TEST_</span>
         </div>
         <Link to="/" style={{ ...mono, fontSize: 10, letterSpacing: "0.1em", color: "var(--muted-foreground)", textDecoration: "none" }}>← BACK TO HOME</Link>
       </nav>
@@ -94,7 +94,7 @@ function ResultPage() {
             </h1>
             <p style={{ ...mono, fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.04em", lineHeight: 1.8 }}>
               {passed
-                ? "You've passed the TPM Masterclass certification exam."
+                ? "You've passed the Practice Test for Technical Product Managers."
                 : data.isFinal
                   ? "You've used all 3 attempts. Revisit the material — the exam reopens in 2 weeks."
                   : `You need 80% to pass. You have ${attemptsRemaining} attempt${attemptsRemaining === 1 ? "" : "s"} left.`}
@@ -217,7 +217,7 @@ function ResultPage() {
 
       {/* FOOTER */}
       <footer style={{ padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: border, marginTop: 24 }}>
-        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM MASTERCLASS</span>
+        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM PRACTICE TEST</span>
         <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--primary)", fontWeight: 700 }}>EXAM-ACE-PRO_</span>
       </footer>
     </div>
@@ -228,7 +228,7 @@ function certificateHtml(identity: UserIdentity, attempt: AttemptRecord): string
   const date = new Date(attempt.completedAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
   const safeName = identity.name.replace(/[<>]/g, "");
   return `<!doctype html>
-<html><head><meta charset="utf-8"/><title>TPM Masterclass Certificate — ${safeName}</title>
+<html><head><meta charset="utf-8"/><title>Practice Test Certificate — ${safeName}</title>
 <style>
   @page { size: A4 landscape; margin: 0; }
   body { margin: 0; font-family: "Space Grotesk", system-ui, sans-serif; background: #e6e4d9; color: #1a1a1a; }
@@ -244,11 +244,11 @@ function certificateHtml(identity: UserIdentity, attempt: AttemptRecord): string
   .sig { width: 38%; text-align: center; } .sig .ln { border-top: 1.5px solid #1a1a1a; margin-bottom: 4px; padding-top: 6px; color: #1a1a1a; }
 </style></head>
 <body><div class="cert">
-  <div class="badge">TPM MASTERCLASS</div>
+  <div class="badge">TPM PRACTICE TEST</div>
   <h1>CERTIFICATE</h1><div class="sub">of Completion</div><div class="line"></div>
   <div class="desc">This certifies that</div>
   <div class="name">${safeName}</div>
-  <div class="desc">has successfully completed the Technical Product Manager Masterclass certification exam, demonstrating mastery of product discovery, requirements, prioritisation, and execution.</div>
+  <div class="desc">has successfully completed the Practice Test for Technical Product Managers, demonstrating mastery of product discovery, requirements, prioritisation, and execution.</div>
   <div class="score">Final score: <b>${attempt.percentage}%</b></div>
   <div class="footer">
     <div class="sig"><div class="ln">${date}</div>Date</div>

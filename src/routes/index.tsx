@@ -15,7 +15,7 @@ import { formatDate } from "@/lib/utils-exam";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TPM Masterclass — Certification Exam" },
+      { title: "Practice Test for Technical Product Managers" },
       { name: "description", content: "100 questions, 60 minutes, 80% to pass." },
     ],
   }),
@@ -98,7 +98,7 @@ function LandingPage() {
           <div style={{ width: 28, height: 28, background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ ...mono, color: "#fff", fontSize: 9, fontWeight: 700 }}>TPM</span>
           </div>
-          <span style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700 }}>MASTERCLASS_</span>
+          <span style={{ ...mono, fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700 }}>PRACTICE TEST_</span>
         </div>
         <a href="#register" style={{ background: "var(--primary)", color: "#fff", ...mono, fontSize: 10, letterSpacing: "0.1em", padding: "8px 16px", fontWeight: 700, textDecoration: "none" }}>
           START EXAM →
@@ -245,7 +245,7 @@ function LandingPage() {
 
       {/* FOOTER */}
       <footer style={{ padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: border }}>
-        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM MASTERCLASS</span>
+        <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--muted-foreground)" }}>© 2025 OLUSHOLA OLUYOMI · TPM PRACTICE TEST</span>
         <span style={{ ...mono, fontSize: 9, letterSpacing: "0.1em", color: "var(--primary)", fontWeight: 700 }}>EXAM-ACE-PRO_</span>
       </footer>
     </div>

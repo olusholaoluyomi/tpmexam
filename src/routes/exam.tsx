@@ -26,7 +26,7 @@ const border = "1.5px solid var(--border)";
 export const Route = createFileRoute("/exam")({
   head: () => ({
     meta: [
-      { title: "Exam in progress — TPM Masterclass" },
+      { title: "Exam in progress — Practice Test for Technical Product Managers" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
