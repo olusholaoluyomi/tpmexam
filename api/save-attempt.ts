@@ -1,42 +1,60 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { put, list, del } from "@vercel/blob";
+import type { IncomingMessage, ServerResponse } from "http";
 
-const BLOB_PATH = "tpmexam/attempts.json";
+const TOKEN = process.env.BLOB_READ_WRITE_TOKEN!;
+const BLOB_BASE = "https://blob.vercel-storage.com";
+const PATHNAME = "tpmexam/attempts.json";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+async function readAttempts(): Promise<unknown[]> {
+  const res = await fetch(`${BLOB_BASE}?prefix=${encodeURIComponent(PATHNAME)}&limit=10`, {
+    headers: { authorization: `Bearer ${TOKEN}` },
+  });
+  const { blobs } = (await res.json()) as { blobs: { pathname: string; url: string }[] };
+  const existing = blobs?.find((b) => b.pathname === PATHNAME);
+  if (!existing) return [];
+  const data = await fetch(existing.url + "?t=" + Date.now());
+  return data.json();
+}
+
+async function writeAttempts(attempts: unknown[]): Promise<void> {
+  await fetch(`${BLOB_BASE}/${PATHNAME}`, {
+    method: "PUT",
+    headers: {
+      authorization: `Bearer ${TOKEN}`,
+      "x-content-type": "application/json",
+      "x-add-random-suffix": "0",
+      "x-allow-overwrite": "1",
+    },
+    body: JSON.stringify(attempts),
+  });
+}
+
+function readBody(req: IncomingMessage): Promise<unknown> {
+  return new Promise((resolve, reject) => {
+    let raw = "";
+    req.on("data", (chunk) => { raw += chunk; });
+    req.on("end", () => { try { resolve(JSON.parse(raw)); } catch (e) { reject(e); } });
+    req.on("error", reject);
+  });
+}
+
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Content-Type", "application/json");
 
-  if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method === "OPTIONS") { res.writeHead(200); res.end(); return; }
+  if (req.method !== "POST") { res.writeHead(405); res.end(JSON.stringify({ error: "Method not allowed" })); return; }
 
   try {
-    const newAttempt = { ...req.body, savedAt: new Date().toISOString() };
-
-    // Read existing attempts
-    let attempts: unknown[] = [];
-    const { blobs } = await list({ prefix: BLOB_PATH });
-    if (blobs.length > 0) {
-      const existing = blobs.find((b) => b.pathname === BLOB_PATH);
-      if (existing) {
-        const resp = await fetch(existing.url + "?t=" + Date.now());
-        attempts = await resp.json();
-        await del(existing.url);
-      }
-    }
-
+    const body = await readBody(req);
+    const newAttempt = { ...(body as object), savedAt: new Date().toISOString() };
+    const attempts = await readAttempts();
     attempts.push(newAttempt);
-
-    await put(BLOB_PATH, JSON.stringify(attempts), {
-      access: "public",
-      addRandomSuffix: false,
-      contentType: "application/json",
-    });
-
-    return res.status(200).json({ ok: true });
+    await writeAttempts(attempts);
+    res.writeHead(200); res.end(JSON.stringify({ ok: true }));
   } catch (err) {
     console.error("save-attempt error:", err);
-    return res.status(500).json({ error: "Failed to save attempt" });
+    res.writeHead(500); res.end(JSON.stringify({ error: "Failed to save" }));
   }
 }
