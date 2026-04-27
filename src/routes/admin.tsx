@@ -300,7 +300,18 @@ function AdminPage() {
                 ))}
               </div>
               <div style={{ padding: "16px" }}>
-                <div style={{ ...mono, fontSize: 10, letterSpacing: "0.12em", color: "var(--muted-foreground)", marginBottom: 10 }}>ATTEMPT HISTORY</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                  <div style={{ ...mono, fontSize: 10, letterSpacing: "0.12em", color: "var(--muted-foreground)" }}>ATTEMPT HISTORY</div>
+                  <button onClick={() => {
+                    const key = `tpm-cbt:user:${selectedEmail!.toLowerCase()}`;
+                    localStorage.removeItem(key);
+                    setAttempts((prev) => prev.filter((a) => a.email.toLowerCase() !== selectedEmail!.toLowerCase()));
+                    setSelectedEmail(null);
+                  }}
+                    style={{ ...mono, fontSize: 10, letterSpacing: "0.1em", color: "var(--destructive)", background: "none", border: "1px solid var(--destructive)", padding: "3px 8px", cursor: "pointer" }}>
+                    RESET ATTEMPTS
+                  </button>
+                </div>
                 {selectedAttempts.map((a) => (
                   <div key={`${a.email}-${a.attemptNumber}`} style={{ border: `1.5px solid ${a.passed ? "var(--primary)" : "var(--destructive)"}`, padding: "14px 16px", marginBottom: 10, background: a.passed ? "rgba(92,148,13,0.04)" : "rgba(204,34,0,0.03)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
