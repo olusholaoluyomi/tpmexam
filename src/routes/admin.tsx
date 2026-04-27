@@ -1,6 +1,46 @@
 import { createFileRoute } from "@tanstack/react-router";
 import React, { useState, useEffect, useMemo } from "react";
 import { formatDuration } from "@/lib/utils-exam";
+import type { UserState } from "@/lib/exam-storage";
+
+// Read all attempts stored locally in this browser
+function readLocalAttempts(): AttemptDoc[] {
+  const PREFIX = "tpm-cbt:user:";
+  const out: AttemptDoc[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key?.startsWith(PREFIX)) continue;
+    try {
+      const state = JSON.parse(localStorage.getItem(key)!) as UserState;
+      if (!state?.identity || !Array.isArray(state.attempts)) continue;
+      for (const a of state.attempts) {
+        out.push({
+          name: state.identity.name,
+          email: state.identity.email,
+          attemptNumber: a.attemptNumber,
+          score: a.score,
+          total: a.total,
+          percentage: a.percentage,
+          passed: a.passed,
+          completedAt: a.completedAt,
+          durationSec: a.durationSec,
+          cheatSwaps: a.cheatSwaps,
+          cheatLock: false,
+          savedAt: a.completedAt,
+          source: "local",
+        });
+      }
+    } catch { /* skip */ }
+  }
+  return out;
+}
+
+function mergeAttempts(local: AttemptDoc[], remote: AttemptDoc[]): AttemptDoc[] {
+  // Deduplicate: prefer remote (has savedAt), skip local if same email+attempt exists remotely
+  const remoteKeys = new Set(remote.map((a) => `${a.email.toLowerCase()}::${a.attemptNumber}`));
+  const uniqueLocal = local.filter((a) => !remoteKeys.has(`${a.email.toLowerCase()}::${a.attemptNumber}`));
+  return [...remote, ...uniqueLocal].sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
+}
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -22,6 +62,7 @@ interface AttemptDoc {
   cheatSwaps: number;
   cheatLock: boolean;
   savedAt: string;
+  source?: "local" | "remote";
 }
 
 function timeAgo(iso: string) {
@@ -67,10 +108,19 @@ function AdminPage() {
   useEffect(() => {
     if (!isLoggedIn) return;
     setLoading(true);
+
+    // Always read localStorage immediately
+    const local = readLocalAttempts();
+
     fetch("/api/admin-data", { headers: { Authorization: `Bearer ${secret}` } })
-      .then((r) => r.ok ? r.json() : Promise.reject(r.status))
-      .then(setAttempts)
-      .catch(() => { sessionStorage.removeItem("tpm-admin-secret"); setSecret(""); })
+      .then((r) => r.ok ? r.json() : Promise.resolve([]))
+      .then((remote: AttemptDoc[]) => {
+        setAttempts(mergeAttempts(local, remote.map((a) => ({ ...a, source: "remote" as const }))));
+      })
+      .catch(() => {
+        // API failed — show local data only
+        setAttempts(local);
+      })
       .finally(() => setLoading(false));
   }, [isLoggedIn, secret]);
 
@@ -165,6 +215,11 @@ function AdminPage() {
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 32px" }}>
 
         {loading && <p style={{ ...mono, fontSize: 13, color: "var(--muted-foreground)", marginBottom: 24 }}>LOADING DATA...</p>}
+        {!loading && attempts.length > 0 && attempts.some((a) => a.source === "local") && attempts.every((a) => a.source === "local") && (
+          <div style={{ ...mono, fontSize: 12, color: "var(--warning)", border: "1px solid var(--warning)", padding: "8px 14px", marginBottom: 20, letterSpacing: "0.04em" }}>
+            ⚠ Showing data from this browser only. Remote sync is pending — data from other users will appear once the API is connected.
+          </div>
+        )}
 
         {/* Stats */}
         {stats && (
