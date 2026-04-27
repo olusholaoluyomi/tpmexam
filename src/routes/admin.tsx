@@ -82,6 +82,7 @@ function AdminPage() {
   const [attempts, setAttempts] = useState<AttemptDoc[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<string | null>(null);
 
   const isLoggedIn = !!secret;
 
@@ -123,6 +124,26 @@ function AdminPage() {
       })
       .finally(() => setLoading(false));
   }, [isLoggedIn, secret]);
+
+  async function testApi() {
+    setTestResult("Testing...");
+    try {
+      const res = await fetch("/api/save-attempt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "API Test", email: "test@admin.local", attemptNumber: 1,
+          score: 80, total: 100, percentage: 80, passed: true,
+          completedAt: new Date().toISOString(), durationSec: 120,
+          cheatSwaps: 0, cheatLock: false,
+        }),
+      });
+      const text = await res.text();
+      setTestResult(`save-attempt → ${res.status}: ${text}`);
+    } catch (e: any) {
+      setTestResult(`save-attempt → ERROR: ${e.message}`);
+    }
+  }
 
   function logout() {
     sessionStorage.removeItem("tpm-admin-secret");
@@ -215,6 +236,18 @@ function AdminPage() {
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 32px" }}>
 
         {loading && <p style={{ ...mono, fontSize: 13, color: "var(--muted-foreground)", marginBottom: 24 }}>LOADING DATA...</p>}
+
+        {/* API diagnostics */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+          <button onClick={testApi} style={{ ...mono, fontSize: 11, letterSpacing: "0.1em", padding: "6px 14px", background: "var(--secondary)", color: "var(--secondary-foreground)", border, cursor: "pointer" }}>
+            TEST SAVE-ATTEMPT API
+          </button>
+          {testResult && (
+            <span style={{ ...mono, fontSize: 11, color: testResult.includes("200") ? "var(--primary)" : "var(--destructive)", letterSpacing: "0.04em" }}>
+              {testResult}
+            </span>
+          )}
+        </div>
         {!loading && attempts.length > 0 && attempts.some((a) => a.source === "local") && attempts.every((a) => a.source === "local") && (
           <div style={{ ...mono, fontSize: 12, color: "var(--warning)", border: "1px solid var(--warning)", padding: "8px 14px", marginBottom: 20, letterSpacing: "0.04em" }}>
             ⚠ Showing data from this browser only. Remote sync is pending — data from other users will appear once the API is connected.
