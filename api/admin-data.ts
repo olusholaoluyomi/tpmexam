@@ -21,6 +21,8 @@ async function readAttempts(): Promise<unknown[]> {
 export default async function handler(req: any, res: any) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/json");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
 
   if (req.method === "OPTIONS") { res.status(200).end(); return; }
   if (req.method !== "GET") { res.status(405).json({ error: "Method not allowed" }); return; }
